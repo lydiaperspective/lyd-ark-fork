@@ -45,6 +45,10 @@ virtualbox-guest-utils-nox
 spice-vdagent
 hyperv
 
+### Power management
+tuned
+tuned-ppd
+
 ### Audio
 pipewire
 pipewire-pulse
