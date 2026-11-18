@@ -6,18 +6,15 @@ sed -i 's/airootfs\.sfs/originium.sfs/g' /usr/lib/initcpio/hooks/archiso || true
 sed -i 's/airootfs\.sha512/originium.sha512/g' /usr/lib/initcpio/hooks/archiso || true
 
 # L1: Remove only specific bloatware .desktop files.
-# Keep everything else (gnome-control-center panels etc. must remain intact).
 for f in bssh.desktop bvnc.desktop avahi-discover.desktop qv4l2.desktop \
          qvidcap.desktop stoken-gui.desktop stoken-gui-small.desktop \
-         org.gnome.Extensions.desktop org.gnome.TextEditor.desktop \
-         lstopo.desktop hwloc-ls.desktop org.gnome.Logs.desktop \
+         lstopo.desktop hwloc-ls.desktop \
          ibus.desktop ibus-setup.desktop \
          ibus-wayland.desktop; do
     rm -f "/usr/share/applications/$f" 2>/dev/null || true
 done
 
-# L2: Rename Console to Terminal in live ISO
-sed -i 's/^Name=.*/Name=Terminal/' /usr/share/applications/org.gnome.Console.desktop 2>/dev/null || true
+# L2: No desktop-specific application renames are needed for Plasma.
 
 # L3: Ensure alga desktop entry is correct regardless of package version
 cat > /usr/share/applications/com.zamkara.alga.desktop << 'EOF'
@@ -40,8 +37,8 @@ glib-compile-schemas /usr/share/glib-2.0/schemas || true
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen || true
 locale-gen
 
-# Ensure GDM and NetworkManager are enabled
-systemctl enable gdm NetworkManager
+# Ensure SDDM and NetworkManager are enabled
+systemctl enable sddm NetworkManager
 systemctl set-default graphical.target
 systemctl mask ostree-prepare-root.service
 
@@ -49,9 +46,8 @@ systemctl mask ostree-prepare-root.service
 systemctl unmask plymouth-start.service
 systemctl enable plymouth-start.service
 
-# Disable GNOME Initial Setup for the live ark user (not for installed system)
+# Prepare the live ark user's home directory
 mkdir -p /home/ark/.config
-echo "yes" > /home/ark/.config/gnome-initial-setup-done
 chown -R 10000:10000 /home/ark
 
 # Mask pacman-related services before removing binaries
@@ -286,7 +282,7 @@ rm -f /usr/bin/gi-compile-repository /usr/bin/gi-decompile-typelib \
     /usr/bin/gi-inspect-typelib /usr/bin/gobject-query \
     /usr/bin/libtool /usr/bin/libtoolize /usr/bin/libtool-next-version
 
-# GStreamer CLI tools (library tetap ada untuk GNOME)
+# GStreamer CLI tools (runtime libraries remain available for desktop applications)
 rm -f /usr/bin/gst-device-monitor-1.0 /usr/bin/gst-discoverer-1.0 \
     /usr/bin/gst-inspect-1.0 /usr/bin/gst-launch-1.0 /usr/bin/gst-play-1.0 \
     /usr/bin/gst-stats-1.0 /usr/bin/gst-tester-1.0 \
