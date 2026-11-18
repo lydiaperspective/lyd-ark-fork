@@ -54,7 +54,7 @@ wireplumber
 
 ### KDE Plasma desktop
 plasma-meta
-sddm
+plasma-login-manager
 konsole
 dolphin
 ark
