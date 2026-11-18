@@ -37,8 +37,8 @@ glib-compile-schemas /usr/share/glib-2.0/schemas || true
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen || true
 locale-gen
 
-# Ensure SDDM and NetworkManager are enabled
-systemctl enable sddm NetworkManager
+# Ensure Plasma Login Manager and NetworkManager are enabled
+systemctl enable plasmalogin NetworkManager
 systemctl set-default graphical.target
 systemctl mask ostree-prepare-root.service
 
