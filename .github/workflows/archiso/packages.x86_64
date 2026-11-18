@@ -52,16 +52,30 @@ pipewire-jack
 pipewire-alsa
 wireplumber
 
-### GNOME desktop
-gdm
-gnome-console
-gnome-control-center
-gnome-disk-utility-git
-gnome-keyring
-gnome-session
-gnome-settings-daemon
-gnome-shell
+### KDE Plasma desktop
+plasma-meta
+sddm
+konsole
+dolphin
+ark
+partitionmanager
+plasma-nm
+plasma-pa
+plasma-systemmonitor
+systemsettings
+kde-gtk-config
+kio-extras
+kwallet
+kwalletmanager
+kwallet-pam
+polkit-kde-agent
+breeze
+breeze-gtk
+qt6-wayland
+xdg-desktop-portal-kde
 xorg-server
+
+### GTK compatibility for cross-desktop applications
 gtk4
 libadwaita
 
