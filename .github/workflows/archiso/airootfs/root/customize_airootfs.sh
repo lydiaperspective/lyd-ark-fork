@@ -16,8 +16,7 @@ for f in bssh.desktop bvnc.desktop avahi-discover.desktop qv4l2.desktop \
     rm -f "/usr/share/applications/$f" 2>/dev/null || true
 done
 
-# L2: Rename Console to Terminal in live ISO
-sed -i 's/^Name=.*/Name=Terminal/' /usr/share/applications/org.gnome.Console.desktop 2>/dev/null || true
+# KDE live desktop uses Konsole as its terminal; no GNOME desktop defaults are applied.
 
 # L3: Ensure alga desktop entry is correct regardless of package version
 cat > /usr/share/applications/com.zamkara.alga.desktop << 'EOF'
@@ -40,8 +39,9 @@ glib-compile-schemas /usr/share/glib-2.0/schemas || true
 sed -i 's/^#en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen || true
 locale-gen
 
-# Ensure GDM and NetworkManager are enabled
-systemctl enable gdm NetworkManager
+# Ensure SDDM and NetworkManager are enabled for the KDE Plasma live session.
+systemctl enable sddm NetworkManager
+systemctl disable gdm 2>/dev/null || true
 systemctl set-default graphical.target
 systemctl mask ostree-prepare-root.service
 
@@ -49,9 +49,8 @@ systemctl mask ostree-prepare-root.service
 systemctl unmask plymouth-start.service
 systemctl enable plymouth-start.service
 
-# Disable GNOME Initial Setup for the live ark user (not for installed system)
+# Prepare the live user's KDE configuration directory.
 mkdir -p /home/ark/.config
-echo "yes" > /home/ark/.config/gnome-initial-setup-done
 chown -R 10000:10000 /home/ark
 
 # Mask pacman-related services before removing binaries
