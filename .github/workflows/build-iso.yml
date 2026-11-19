@@ -1,4 +1,4 @@
-name: Build KDE Ark Installer ISO
+name: Build Lyd Ark KDE Installer ISO
 
 on:
   push:
@@ -132,7 +132,7 @@ jobs:
           import urllib.request
           req = urllib.request.Request(
               "https://api.github.com/repos/zamkara/ark-backgrounds/releases/latest",
-              headers={"User-Agent": "Ark KDE ISO Builder"}
+              headers={"User-Agent": "Lyd Ark KDE ISO Builder"}
           )
           data = json.loads(urllib.request.urlopen(req, timeout=60).read().decode())
           assets = [a for a in data.get("assets", [])
@@ -164,38 +164,38 @@ jobs:
           sudo chown -R "$USER:$USER" out/ pacman-cache/
           ISO=$(find out -maxdepth 1 -type f -name '*.iso' -print -quit)
           test -n "$ISO"
-          mv "$ISO" out/ark-installer.iso
-          test -s out/ark-installer.iso
-          file out/ark-installer.iso
+          mv "$ISO" out/lyd-ark-kde-installer.iso
+          test -s out/lyd-ark-kde-installer.iso
+          file out/lyd-ark-kde-installer.iso
 
       - name: Package ISO for release
         id: package-iso
         run: |
           set -euo pipefail
           mkdir -p release-assets
-          ISO=out/ark-installer.iso
+          ISO=out/lyd-ark-kde-installer.iso
           SIZE=$(stat -c '%s' "$ISO")
           # Keep release assets comfortably below GitHub's 2 GiB per-asset ceiling.
           LIMIT=$((1900 * 1024 * 1024))
           if [ "$SIZE" -le "$LIMIT" ]; then
             echo "ISO is $SIZE bytes; uploading as one file."
-            cp "$ISO" release-assets/ark-installer.iso
+            cp "$ISO" release-assets/lyd-ark-kde-installer.iso
             echo "is-split=false" >> "$GITHUB_OUTPUT"
           else
             echo "ISO is $SIZE bytes; splitting into release-sized parts."
             split --bytes=1900M --numeric-suffixes=1 --suffix-length=3 \
               --additional-suffix=.part "$ISO" \
-              release-assets/ark-installer.iso.part
+              release-assets/lyd-ark-kde-installer.iso.part
             cp .github/workflows/recombine-iso.sh release-assets/recombine-iso.sh
             echo "is-split=true" >> "$GITHUB_OUTPUT"
           fi
-          (cd out && sha256sum ark-installer.iso) > release-assets/SHA256SUMS
+          (cd out && sha256sum lyd-ark-kde-installer.iso) > release-assets/SHA256SUMS
           ls -lh release-assets/
 
       - name: Upload ISO release assets
         uses: actions/upload-artifact@v4
         with:
-          name: ark-kde-installer-iso
+          name: lyd-ark-kde-installer-iso
           path: release-assets/
           if-no-files-found: error
           retention-days: 14
@@ -210,16 +210,16 @@ jobs:
       - name: Download ISO release assets
         uses: actions/download-artifact@v4
         with:
-          name: ark-kde-installer-iso
+          name: lyd-ark-kde-installer-iso
           path: release-assets/
 
       - name: Publish ISO release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: kde-iso-${{ github.sha }}
-          name: "Ark KDE Installer ${{ github.sha }}"
+          tag_name: lyd-lyd-ark-kde-iso-${{ github.sha }}
+          name: "Lyd Ark KDE Installer ${{ github.sha }}"
           body: |
-            # Ark Linux KDE Plasma Installer
+            # Lyd Ark KDE Plasma Installer
 
             This ISO installs the **ark-nvidia-580** image built from the
             `lydiaperspective/lyd-ark-image` repository.
@@ -227,7 +227,7 @@ jobs:
             The workflow uploads the ISO as a single file whenever it is below the
             configured 1900 MiB safety threshold. Larger ISOs are split into parts.
 
-            ## If the release contains ark-installer.iso
+            ## If the release contains lyd-ark-kde-installer.iso
 
             Verify it with:
 
@@ -237,7 +237,7 @@ jobs:
 
             ## If the release contains .part files
 
-            Download every `ark-installer.iso.partNNN.part` file, `SHA256SUMS`,
+            Download every `lyd-ark-kde-installer.iso.partNNN.part` file, `SHA256SUMS`,
             and `recombine-iso.sh` into one directory, then run:
 
             ```bash
@@ -250,7 +250,7 @@ jobs:
             ## Write to USB
 
             ```bash
-            sudo dd if=ark-installer.iso of=/dev/sdX bs=4M status=progress conv=fsync
+            sudo dd if=lyd-ark-kde-installer.iso of=/dev/sdX bs=4M status=progress conv=fsync
             ```
 
             Replace `/dev/sdX` with the correct USB device.
