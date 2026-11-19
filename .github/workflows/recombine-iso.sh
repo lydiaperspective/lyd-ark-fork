@@ -2,16 +2,16 @@
 set -euo pipefail
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-OUTPUT="${1:-"$SCRIPT_DIR/ark-installer.iso"}"
+OUTPUT="${1:-"$SCRIPT_DIR/lyd-ark-kde-installer.iso"}"
 shopt -s nullglob
-PARTS=("$SCRIPT_DIR"/ark-installer.iso.part[0-9][0-9][0-9].part)
+PARTS=("$SCRIPT_DIR"/lyd-ark-kde-installer.iso.part[0-9][0-9][0-9].part)
 
 if (( ${#PARTS[@]} == 0 )); then
   echo "No ISO parts found beside $0" >&2
   exit 1
 fi
 
-EXPECTED=$(awk '$2 == "ark-installer.iso" {print $1}' "$SCRIPT_DIR/SHA256SUMS")
+EXPECTED=$(awk '$2 == "lyd-ark-kde-installer.iso" {print $1}' "$SCRIPT_DIR/SHA256SUMS")
 if [[ ! "$EXPECTED" =~ ^[[:xdigit:]]{64}$ ]]; then
   echo "Could not read expected SHA-256 from SHA256SUMS" >&2
   exit 1
