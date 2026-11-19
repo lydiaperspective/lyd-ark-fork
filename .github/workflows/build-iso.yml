@@ -216,7 +216,7 @@ jobs:
       - name: Publish ISO release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: lyd-lyd-ark-kde-iso-${{ github.sha }}
+          tag_name: lyd-ark-kde-iso-${{ github.sha }}
           name: "Lyd Ark KDE Installer ${{ github.sha }}"
           body: |
             # Lyd Ark KDE Plasma Installer
