@@ -55,7 +55,8 @@ wireplumber
 ### KDE Plasma live desktop
 plasma-desktop
 plasma-workspace
-plasma-wayland-session
+plasma-integration
+polkit-kde-agent
 plasma-nm
 plasma-pa
 plasma-systemmonitor
