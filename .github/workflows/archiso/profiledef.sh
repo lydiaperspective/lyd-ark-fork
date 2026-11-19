@@ -2,10 +2,10 @@
 #!/usr/bin/env bash
 # shellcheck disable=SC2034
 
-iso_name="ark-installer"
-iso_label="ark_$(date +%Y%m)"
-iso_publisher="Ark Linux <https://github.com/lydiaperspective/lyd-ark-fork>"
-iso_application="ark linux Installer"
+iso_name="lyd-ark-kde-installer"
+iso_label="LYD_ARK_$(date +%Y%m)"
+iso_publisher="Lyd Ark Project <https://github.com/lydiaperspective/lyd-ark-fork>"
+iso_application="Lyd Ark KDE Plasma Installer"
 iso_version="$(date +%Y.%m.%d)"
 install_dir="ark"
 buildmodes=('iso')
