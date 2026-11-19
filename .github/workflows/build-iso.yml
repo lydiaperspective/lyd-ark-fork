@@ -29,6 +29,31 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: python3 .github/workflows/download-aur-release.py --kind identity
+      - name: Wait for current Alga package release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          EXPECTED=$(gh api repos/lydiaperspective/lyd-agka/commits/main --jq '.sha')
+          STATE=pending
+          for attempt in $(seq 1 60); do
+            RUN=$(gh api 'repos/lydiaperspective/lyd-agka/actions/workflows/release.yml/runs?branch=main&per_page=1')
+            RUN_SHA=$(printf '%s' "$RUN" | jq -r '.workflow_runs[0].head_sha // empty')
+            STATE=$(printf '%s' "$RUN" | jq -r '.workflow_runs[0] | if .status == "completed" then .conclusion else .status end')
+            if [ "$RUN_SHA" = "$EXPECTED" ] && [ "$STATE" = success ]; then
+              echo "Current Alga commit $EXPECTED has a published package."
+              break
+            fi
+            if [ "$RUN_SHA" = "$EXPECTED" ] && [[ "$STATE" =~ ^(failure|cancelled|timed_out|action_required|stale)$ ]]; then
+              echo "Alga package build failed: $STATE" >&2
+              exit 1
+            fi
+            echo "Waiting for Alga package build ($attempt/60): run=$RUN_SHA state=$STATE expected=$EXPECTED"
+            sleep 30
+          done
+          [ "$RUN_SHA" = "$EXPECTED" ] && [ "$STATE" = success ] || {
+            echo "Timed out waiting for the latest Alga package build." >&2
+            exit 1
+          }
       - name: Check published Alga fork release
         id: alga
         env:
