@@ -221,8 +221,8 @@ jobs:
           body: |
             # Lyd Ark KDE Plasma Installer
 
-            This ISO installs the **ark-nvidia-580** image built from the
-            `lydiaperspective/lyd-ark-image` repository.
+            This is the Lyd Ark KDE Plasma live installer. Alga installs the Lyd Ark
+            bootc image variant selected in the installer.
 
             The workflow uploads the ISO as a single file whenever it is below the
             configured 1900 MiB safety threshold. Larger ISOs are split into parts.
