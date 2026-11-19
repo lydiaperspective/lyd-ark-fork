@@ -8,7 +8,7 @@ on:
   workflow_dispatch:
 
 concurrency:
-  group: ark-iso-release
+  group: lyd-ark-iso-release
   cancel-in-progress: false
 
 permissions:
@@ -146,9 +146,9 @@ jobs:
         uses: actions/cache@v4
         with:
           path: pacman-cache/
-          key: ${{ runner.os }}-pacman-kde-iso-${{ hashFiles('.github/workflows/archiso/packages.x86_64') }}
+          key: ${{ runner.os }}-pacman-lyd-ark-kde-iso-${{ hashFiles('.github/workflows/archiso/packages.x86_64') }}
           restore-keys: |
-            ${{ runner.os }}-pacman-kde-iso-
+            ${{ runner.os }}-pacman-lyd-ark-kde-iso-
 
       - name: Prepare cache directory
         run: mkdir -p pacman-cache
