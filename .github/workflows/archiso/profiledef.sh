@@ -4,7 +4,7 @@
 
 iso_name="ark-installer"
 iso_label="ark_$(date +%Y%m)"
-iso_publisher="ark linux <https://github.com/zamkara/ark>"
+iso_publisher="Ark Linux <https://github.com/lydiaperspective/lyd-ark-fork>"
 iso_application="ark linux Installer"
 iso_version="$(date +%Y.%m.%d)"
 install_dir="ark"
