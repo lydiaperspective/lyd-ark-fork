@@ -40,7 +40,6 @@ locale-gen
 
 # Ensure SDDM and NetworkManager are enabled for the KDE Plasma live session.
 systemctl enable sddm NetworkManager
-systemctl disable gdm 2>/dev/null || true
 systemctl set-default graphical.target
 systemctl mask ostree-prepare-root.service
 
