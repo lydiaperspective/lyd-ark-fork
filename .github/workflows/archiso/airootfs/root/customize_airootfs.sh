@@ -6,10 +6,9 @@ sed -i 's/airootfs\.sfs/originium.sfs/g' /usr/lib/initcpio/hooks/archiso || true
 sed -i 's/airootfs\.sha512/originium.sha512/g' /usr/lib/initcpio/hooks/archiso || true
 
 # L1: Remove only specific bloatware .desktop files.
-# Keep everything else (gnome-control-center panels etc. must remain intact).
+# Keep the KDE Plasma desktop and its configuration intact.
 for f in bssh.desktop bvnc.desktop avahi-discover.desktop qv4l2.desktop \
          qvidcap.desktop stoken-gui.desktop stoken-gui-small.desktop \
-         org.gnome.Extensions.desktop org.gnome.TextEditor.desktop \
          lstopo.desktop hwloc-ls.desktop org.gnome.Logs.desktop \
          ibus.desktop ibus-setup.desktop \
          ibus-wayland.desktop; do
