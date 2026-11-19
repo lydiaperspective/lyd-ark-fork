@@ -52,18 +52,34 @@ pipewire-jack
 pipewire-alsa
 wireplumber
 
-### GNOME desktop
-gdm
-gnome-console
-gnome-control-center
-gnome-disk-utility-git
-gnome-keyring
-gnome-session
-gnome-settings-daemon
-gnome-shell
+### KDE Plasma live desktop
+plasma-desktop
+plasma-workspace
+plasma-wayland-session
+plasma-nm
+plasma-pa
+plasma-systemmonitor
+powerdevil
+systemsettings
+sddm
+konsole
+dolphin
+ark
+okular
+kate
+spectacle
+partitionmanager
+kde-gtk-config
+breeze-gtk
+xdg-desktop-portal
+xdg-desktop-portal-kde
+kwallet
+kwallet-pam
 xorg-server
 gtk4
-libadwaita
+qt6-wayland
+tuned
+tuned-ppd
 
 ### Fonts
 noto-fonts
