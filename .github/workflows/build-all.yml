@@ -31,9 +31,9 @@ jobs:
         env:
           ARK_WORKFLOW_TOKEN: ${{ secrets.ARK_WORKFLOW_TOKEN }}
         run: |
-          python3 .github/workflows/dispatch-and-wait.py \\
-            --repo lydiaperspective/lyd-ark-image \\
-            --workflow build-payload.yml \\
+          python3 .github/workflows/dispatch-and-wait.py \
+            --repo lydiaperspective/lyd-ark-image \
+            --workflow build-payload.yml \
             --inputs '{"force":true,"runner":"${{ inputs.runner }}"}'
 
       - name: Report published image variants
