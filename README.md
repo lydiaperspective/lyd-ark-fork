@@ -81,3 +81,46 @@ reporting success.
 Lyd Ark is under active development. Treat installer images as test builds
 until the relevant image-build, ISO-build, and hardware-install tests have
 passed.
+
+## Build all image variants
+
+The **Build All Lyd Ark Images** workflow in
+[GitHub Actions](https://github.com/lydiaperspective/lyd-ark-fork/actions/workflows/build-all.yml)
+runs the complete image payload build in `lyd-ark-image` from one manual
+dispatch. It publishes both userspace bases, the standard/Apex/server kernel
+layers, and all seven final bootc variants:
+
+- `intel-modern`
+- `intel-modern-apex`
+- `ark-nvidia-open`
+- `ark-apex-nvidia-open`
+- `ark-nvidia-580`
+- `ark-apex-nvidia-580`
+- `intel3-server-lts`
+
+The workflow waits for the remote image build to finish successfully. A failed
+or timed-out build fails the orchestrator workflow.
+
+### One-time GitHub secret
+
+The workflow dispatches the image build in the separate `lyd-ark-image`
+repository. Add a fine-grained personal access token as the repository Actions
+secret `ARK_WORKFLOW_TOKEN` in `lyd-ark-fork`.
+
+Give the token access only to:
+
+- `lyd-ark-image`
+
+Required fine-grained token permissions:
+
+- **Actions: Read and write** — dispatch the image workflow and inspect its run
+- **Contents: Read-only** — identify the current `main` commit before dispatch
+
+The image workflow uses its own repository `GITHUB_TOKEN` permissions to
+publish container images and other build outputs. The personal token is used
+only to start and monitor the workflow.
+
+After adding the secret, open the workflow link above, choose **Run workflow**,
+and select the image build runner. The default is GitHub-hosted; the self-hosted
+option requires the `ark-builder` runner labels configured in
+`lyd-ark-image`.
