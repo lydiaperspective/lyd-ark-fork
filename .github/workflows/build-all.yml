@@ -1,4 +1,4 @@
-name: Build All Lyd Ark Images and Installer ISO
+name: Build All Lyd Ark Images
 
 on:
   workflow_dispatch:
@@ -13,31 +13,15 @@ on:
           - self-hosted
 
 concurrency:
-  group: lyd-ark-end-to-end-release
+  group: lyd-ark-image-build
   cancel-in-progress: false
 
 permissions:
   contents: read
 
 jobs:
-  build-installer:
-    name: 1 - Build and publish Alga installer
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-    steps:
-      - name: Check out orchestrator
-        uses: actions/checkout@v6
-      - name: Dispatch Alga package build and wait
-        env:
-          ARK_WORKFLOW_TOKEN: ${{ secrets.ARK_WORKFLOW_TOKEN }}
-        run: |
-          python3 .github/workflows/dispatch-and-wait.py \
-            --repo lydiaperspective/lyd-agka \
-            --workflow release.yml
-
   build-image-variants:
-    name: 2 - Build and publish all seven image variants
-    needs: build-installer
+    name: Build and publish all seven image variants
     runs-on: ubuntu-latest
     timeout-minutes: 360
     steps:
@@ -47,38 +31,21 @@ jobs:
         env:
           ARK_WORKFLOW_TOKEN: ${{ secrets.ARK_WORKFLOW_TOKEN }}
         run: |
-          python3 .github/workflows/dispatch-and-wait.py \
-            --repo lydiaperspective/lyd-ark-image \
-            --workflow build-payload.yml \
+          python3 .github/workflows/dispatch-and-wait.py \\
+            --repo lydiaperspective/lyd-ark-image \\
+            --workflow build-payload.yml \\
             --inputs '{"force":true,"runner":"${{ inputs.runner }}"}'
 
-  build-installer-iso:
-    name: 3 - Build and publish the bootable installer ISO
-    needs: build-image-variants
-    runs-on: ubuntu-latest
-    timeout-minutes: 360
-    steps:
-      - name: Check out orchestrator
-        uses: actions/checkout@v6
-      - name: Dispatch ISO build and wait
-        env:
-          ARK_WORKFLOW_TOKEN: ${{ secrets.ARK_WORKFLOW_TOKEN }}
-        run: |
-          python3 .github/workflows/dispatch-and-wait.py \
-            --repo lydiaperspective/lyd-ark-fork \
-            --workflow build-iso.yml
-
-  complete:
-    name: End-to-end build complete
-    needs: [build-installer, build-image-variants, build-installer-iso]
-    runs-on: ubuntu-latest
-    steps:
-      - name: Report published outputs
+      - name: Report published image variants
         run: |
           {
-            echo "## Lyd Ark release pipeline completed"
+            echo "## Lyd Ark image build completed"
             echo
-            echo "- Alga installer package: published"
-            echo "- All seven bootc image variants: published"
-            echo "- KDE Plasma installer ISO: published"
+            echo "- `intel-modern`"
+            echo "- `intel-modern-apex`"
+            echo "- `ark-nvidia-open`"
+            echo "- `ark-apex-nvidia-open`"
+            echo "- `ark-nvidia-580`"
+            echo "- `ark-apex-nvidia-580`"
+            echo "- `intel3-server-lts`"
           } >> "$GITHUB_STEP_SUMMARY"
