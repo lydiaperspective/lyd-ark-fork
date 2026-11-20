@@ -81,33 +81,7 @@ jobs:
       - name: Install build dependencies
         run: sudo apt-get update && sudo apt-get install -y podman wget curl jq gh
 
-      - name: Wait for current desktop base image to publish
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: |
-          EXPECTED=$(gh api repos/lydiaperspective/lyd-ark-image/commits/main --jq '.sha')
-          STATE=pending
-          for attempt in $(seq 1 60); do
-            RUN=$(gh api 'repos/lydiaperspective/lyd-ark-image/actions/workflows/rebuild-base-images.yml/runs?branch=main&per_page=1')
-            RUN_SHA=$(printf '%s' "$RUN" | jq -r '.workflow_runs[0].head_sha // empty')
-            STATE=$(printf '%s' "$RUN" | jq -r '.workflow_runs[0] | if .status == "completed" then .conclusion else .status end')
-            if [ "$RUN_SHA" = "$EXPECTED" ] && [ "$STATE" = success ]; then
-              echo "Current desktop base image for image-builder commit $EXPECTED was published."
-              break
-            fi
-            if [ "$RUN_SHA" = "$EXPECTED" ] && [[ "$STATE" =~ ^(failure|cancelled|timed_out|action_required|stale)$ ]]; then
-              echo "Desktop base image build for $EXPECTED failed: $STATE" >&2
-              exit 1
-            fi
-            echo "Waiting for desktop base image ($attempt/60): run=$RUN_SHA state=$STATE expected=$EXPECTED"
-            sleep 30
-          done
-          [ "$RUN_SHA" = "$EXPECTED" ] && [ "$STATE" = success ] || {
-            echo "Timed out waiting for the latest desktop base image build." >&2
-            exit 1
-          }
-
-      - name: Verify desktop base image is pullable
+      - name: Pull latest published desktop base image
         run: |
           sudo podman pull ghcr.io/lydiaperspective/lyd-ark-image:base-desktop
 
