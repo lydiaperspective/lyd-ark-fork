@@ -23,7 +23,7 @@ jobs:
   build-installer:
     name: 1 - Build and publish Alga installer
     runs-on: ubuntu-latest
-    timeout-minutes: 370
+    timeout-minutes: 360
     steps:
       - name: Check out orchestrator
         uses: actions/checkout@v6
@@ -39,7 +39,7 @@ jobs:
     name: 2 - Build and publish all seven image variants
     needs: build-installer
     runs-on: ubuntu-latest
-    timeout-minutes: 370
+    timeout-minutes: 360
     steps:
       - name: Check out orchestrator
         uses: actions/checkout@v6
@@ -56,7 +56,7 @@ jobs:
     name: 3 - Build and publish the bootable installer ISO
     needs: build-image-variants
     runs-on: ubuntu-latest
-    timeout-minutes: 370
+    timeout-minutes: 360
     steps:
       - name: Check out orchestrator
         uses: actions/checkout@v6
