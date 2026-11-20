@@ -29,9 +29,9 @@ Requirements:
 Build the live ISO:
 
 ```bash
-sudo podman run --rm --privileged \\
-  -v "$(pwd):/work" \\
-  -w /work docker.io/archlinux:latest \\
+sudo podman run --rm --privileged \
+  -v "$(pwd):/work" \
+  -w /work docker.io/archlinux:latest \
   bash /work/.github/workflows/build_iso.sh
 ```
 
