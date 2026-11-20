@@ -12,7 +12,7 @@ import urllib.request
 
 API = "https://api.github.com"
 POLL_SECONDS = 30
-TIMEOUT_SECONDS = 6 * 60 * 60
+TIMEOUT_SECONDS = 5 * 60 * 60 + 50 * 60
 
 
 def request(token, method, path, payload=None):
