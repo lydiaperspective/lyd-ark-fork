@@ -56,6 +56,7 @@ wireplumber
 plasma-desktop
 plasma-workspace
 plasma-integration
+plasma-login-manager
 polkit-kde-agent
 breeze
 breeze-icons
@@ -64,7 +65,6 @@ plasma-pa
 plasma-systemmonitor
 powerdevil
 systemsettings
-sddm
 konsole
 dolphin
 ark
