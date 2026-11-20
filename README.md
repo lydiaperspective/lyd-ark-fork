@@ -81,3 +81,51 @@ reporting success.
 Lyd Ark is under active development. Treat installer images as test builds
 until the relevant image-build, ISO-build, and hardware-install tests have
 passed.
+
+## Full release pipeline
+
+The **Build All Lyd Ark Images and Installer ISO** workflow in
+[GitHub Actions](https://github.com/lydiaperspective/lyd-ark-fork/actions/workflows/build-all.yml)
+runs the complete release sequence from one manual dispatch:
+
+1. Builds and publishes the Alga installer package from `lyd-agka`.
+2. Runs the full image payload build in `lyd-ark-image`, publishing both
+   userspace bases, the standard/Apex/server kernel layers, and all seven
+   final bootc variants:
+   - `intel-modern`
+   - `intel-modern-apex`
+   - `ark-nvidia-open`
+   - `ark-apex-nvidia-open`
+   - `ark-nvidia-580`
+   - `ark-apex-nvidia-580`
+   - `intel3-server-lts`
+3. Builds and publishes the KDE Plasma installer ISO from this repository.
+
+Each stage waits for its remote GitHub Actions run to complete successfully
+before starting the next stage. A failed or timed-out stage stops the pipeline.
+
+### One-time GitHub secret
+
+Because the workflow dispatches Actions runs in three separate repositories,
+add a fine-grained personal access token as the repository Actions secret
+`ARK_WORKFLOW_TOKEN` in `lyd-ark-fork`.
+
+Give the token access to these repositories:
+
+- `lyd-agka`
+- `lyd-ark-image`
+- `lyd-ark-fork`
+
+Required fine-grained token permissions:
+
+- **Actions: Read and write** — dispatch workflows and inspect their runs
+- **Contents: Read-only** — identify the current `main` commit before dispatch
+
+The individual workflows use their own repository `GITHUB_TOKEN` permissions
+to publish packages, container images, and GitHub Releases. The personal token
+is used only to start and monitor the workflows.
+
+After adding the secret, open the workflow link above, choose **Run workflow**,
+and select the image build runner. The default is GitHub-hosted; the self-hosted
+option requires the `ark-builder` runner labels configured in
+`lyd-ark-image`.
