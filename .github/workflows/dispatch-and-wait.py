@@ -2,7 +2,6 @@
 """Dispatch a GitHub Actions workflow in another Lyd Ark repository and wait for it."""
 
 import argparse
-import datetime as dt
 import json
 import os
 import sys
@@ -57,8 +56,9 @@ def main():
     repo_path = f"/repos/{args.repo}"
     branch = request(token, "GET", repo_path + "/commits/main")
     expected_sha = branch["sha"]
-    started = dt.datetime.now(dt.timezone.utc)
-    started_iso = started.isoformat().replace("+00:00", "Z")
+    runs_path = repo_path + f"/actions/workflows/{args.workflow}/runs?event=workflow_dispatch&branch=main&per_page=20"
+    previous_runs = request(token, "GET", runs_path)
+    previous_ids = {item["id"] for item in previous_runs.get("workflow_runs", [])}
 
     print(f"Dispatching {args.repo}/{args.workflow} at main ({expected_sha})", flush=True)
     request(
@@ -71,18 +71,13 @@ def main():
     deadline = time.monotonic() + TIMEOUT_SECONDS
     run = None
     while time.monotonic() < deadline:
-        listing = request(
-            token,
-            "GET",
-            repo_path + f"/actions/workflows/{args.workflow}/runs?event=workflow_dispatch&branch=main&per_page=20",
-        )
+        listing = request(token, "GET", runs_path)
         candidates = [
             item for item in listing.get("workflow_runs", [])
-            if item.get("head_sha") == expected_sha
-            and item.get("created_at", "") >= started_iso
+            if item.get("head_sha") == expected_sha and item.get("id") not in previous_ids
         ]
         if candidates:
-            run = max(candidates, key=lambda item: item.get("created_at", ""))
+            run = max(candidates, key=lambda item: item.get("run_number", 0))
             break
         time.sleep(POLL_SECONDS)
 
